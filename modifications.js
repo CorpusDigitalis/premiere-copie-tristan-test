@@ -17,20 +17,20 @@ function appliquerModifications() {
   const modifications = {
     
     // Accueil
-    "titre-accueil": { text: "Bienvenue" },
+    "titre-accueil": { text: "Bonjour" },
     "texte-description": {
       text:
-        "Je conçois des sites web professionnels sur mesure, pensés pour valoriser l’identité, les différents travaux et l’expertise de professionnels issus de divers secteurs.<br><br>Chaque site est développé de manière personnalisée, avec une attention portée à la lisibilité, à la simplicité d’usage et à l’autonomie du client."
+        "voici le prmier site creer par moi meme"
     },
 
     // Header
-    "titre-header": { text: "Tristan Arbona" },
+    "titre-header": { text: "Jean Paul" },
     "texte-accueil": { text: "Accueil" },
     "texte-cours": { text: "Cours" },
     "texte-publications": { text: "Publications" },
 
     // Footer
-    "email": { text: "tristan.arbona@gmail.com", href: "mailto:tristan.arbona@gmail.com" },
+    "email": { text: "Jean.Polo@gmail.com", href: "mailto:tristan.arbona@gmail.com" },
     "linkedin": { text: "LinkedIn", href: "https://www.linkedin.com/in/tristan-arbona-a4829a269/" },
     "scholar": { text: "Google Scholar", href: "https://scholar.google.com/citations?user=XXXX" },
     "cv": { text: "CV", href: "https://drive.google.com/file/d/1iy_p1gbycwSr_AFHjfRfNRiofvvcXwD7/view" },
