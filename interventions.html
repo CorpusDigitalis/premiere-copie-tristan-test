@@ -8,50 +8,35 @@
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    /* Timeline spécifique */
-    #titre-interventions { text-align: center; }
-
-    #timeline-wrapper { position: relative; margin-top: 2rem; }
-
-    /* Zone outils sous le titre */
+    /* Zone outils en une seule ligne horizontale */
     #tools-box {
-      position: relative;
-      width: 260px;
-      background: #ffffff;
-      border: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1rem auto;
+      max-width: 960px;
+      padding: 0.75rem 1rem;
+      background: #fff;
       border-radius: 12px;
-      padding: 1rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      margin: 1rem auto 2rem auto;
+      gap: 2rem;
+      flex-wrap: wrap;
     }
-    .tools-group { margin-bottom: .75rem; }
-    .tools-label { display: block; font-size: .9rem; margin-bottom: .25rem; color: #222; }
-    #search-keyword, #date-start, #date-end {
-      width: 100%; padding: .45rem .55rem; border: 1px solid #ddd; border-radius: 8px;
-      background: #fff; font-family: 'Alata', sans-serif; letter-spacing: .02em;
-    }
-    #btn-reset {
-      width: 100%; padding: .5rem .75rem; border: none; border-radius: 8px;
-      background: #1f1f1f; color: #fff; letter-spacing: .02em; cursor: pointer;
-      transition: transform .2s ease, background .1s ease;
-    }
+    #search-keyword { flex: 1 1 55%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ddd; }
+    #date-start, #date-end { flex: 1 1 20%; padding: 0.5rem; border-radius: 8px; border: 1px solid #ddd; }
+    #btn-reset { flex: 1 1 10%; padding: 0.5rem; border: none; border-radius: 8px; background: #1f1f1f; color: #fff; cursor: pointer; transition: transform .2s ease, background .1s ease; }
     #btn-reset:hover { transform: scale(.98); }
     #btn-reset:active { background: #444; transform: scale(.96); }
 
-    /* Timeline grid */
-    .timeline-grid { display: grid; grid-template-columns: 1fr 2px 1fr; column-gap: 2rem; row-gap: 2rem; position: relative; }
-    #timeline-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; transform: translateX(-50%); background: #1f1f1f; }
+    /* Timeline spécifique */
+    #titre-interventions { text-align: center; margin-top: 1rem; }
+    #timeline-wrapper { position: relative; margin-top: 3rem; margin-bottom: 4rem; }
+    .timeline-grid { display: grid; grid-template-columns: 1fr 4px 1fr; column-gap: 2rem; row-gap: 2rem; position: relative; }
+    #timeline-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; transform: translateX(-50%); background: linear-gradient(to bottom, transparent, #1f1f1f); }
 
     .timeline-event { display: contents; }
     .timeline-dot { grid-column: 2; position: relative; height: 0; }
-    .timeline-dot::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: .5rem;
-      transform: translate(-50%, -50%);
-      width: 10px; height: 10px; background: #1f1f1f; border-radius: 50%;
-    }
+    .timeline-dot::after { content: ""; position: absolute; left: 50%; top: .5rem; transform: translate(-50%, -50%); width: 10px; height: 10px; background: #1f1f1f; border-radius: 50%; }
 
     .event-left { grid-column: 1; display: flex; justify-content: flex-end; }
     .event-card {
@@ -71,7 +56,7 @@
     #timeline-end-dot { position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); width: 10px; height: 10px; background: #1f1f1f; border-radius: 50%; }
 
     @media (max-width: 880px) {
-      #tools-box { width: min(92vw, 420px); }
+      #tools-box { flex-direction: column; align-items: stretch; gap: .5rem; }
       .timeline-grid { grid-template-columns: 1fr; }
       #timeline-line { left: 16px; transform: none; }
       .timeline-dot { grid-column: 1; }
@@ -88,180 +73,81 @@
   <div id="header-placeholder"></div>
 
   <div class="container">
+    <!-- Zone outils en haut -->
+    <aside id="tools-box" aria-label="Outils de filtrage">
+      <input type="text" id="search-keyword" placeholder="Rechercher mots-clés…" />
+      <input type="date" id="date-start" />
+      <input type="date" id="date-end" />
+      <button id="btn-reset">Réinitialiser</button>
+    </aside>
+
     <h1 id="titre-interventions">Interventions & Colloques</h1>
     <p id="texte-intro-interventions" class="publications-text">
       Présentation chronologique des interventions, colloques et communications du professeur. Filtrez par période ou par mots-clés.
     </p>
 
-    <!-- Zone outils sous le titre -->
-    <aside id="tools-box" aria-label="Outils de filtrage">
-      <h2 id="tools-title">Filtrer</h2>
-      <div class="tools-group">
-        <label for="search-keyword" class="tools-label" id="label-mots-cles">Mots-clés</label>
-        <input type="text" id="search-keyword" placeholder="ex. colloque, Paris, éducation…" />
-      </div>
-      <div class="tools-group">
-        <span class="tools-label" id="label-periode">Période</span>
-        <input type="date" id="date-start" aria-label="Date de début" />
-        <div style="height:.5rem;"></div>
-        <input type="date" id="date-end" aria-label="Date de fin" />
-      </div>
-      <button id="btn-reset" type="button">Réinitialiser</button>
-    </aside>
-
     <section id="timeline-wrapper" aria-label="Chronologie des interventions">
       <div id="timeline-line" aria-hidden="true"></div>
       <div class="timeline-grid" id="timeline-grid">
-
-        <!-- 10 événements -->
-        <div class="timeline-event" data-date="2015-03-12" data-keywords="colloque,Paris">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-1-date">12/03/2015</p>
-              <p class="event-lieu" id="event-1-lieu">Paris, France</p>
-            </div>
-          </div>
+        <!-- 10 événements inversés ici (plus récent en haut) -->
+        <div class="timeline-event" data-date="2023-02-14" data-keywords="présentation,Nice">
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-10-date">14/02/2023</p><p class="event-lieu" id="event-10-lieu">Nice, France</p></div></div>
           <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-1-type">Colloque</h1>
-            <p class="event-description" id="event-1-desc">Présentation sur l'économie numérique.</p>
-            <p class="event-link" id="event-1-link"><a href="#">Voir le document</a></p>
-          </div>
-        </div>
-
-        <div class="timeline-event" data-date="2016-06-20" data-keywords="présentation,Lyon">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-2-date">20/06/2016</p>
-              <p class="event-lieu" id="event-2-lieu">Lyon, France</p>
-            </div>
-          </div>
-          <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-2-type">Présentation</h1>
-            <p class="event-description" id="event-2-desc">Communication sur l'impact des politiques publiques.</p>
-            <p class="event-link" id="event-2-link"><a href="#">Voir le document</a></p>
-          </div>
-        </div>
-
-        <div class="timeline-event" data-date="2017-09-05" data-keywords="colloque,Bordeaux">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-3-date">05/09/2017</p>
-              <p class="event-lieu" id="event-3-lieu">Bordeaux, France</p>
-            </div>
-          </div>
-          <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-3-type">Colloque</h1>
-            <p class="event-description" id="event-3-desc">Conférence sur les marchés financiers.</p>
-            <p class="event-link" id="event-3-link"><a href="#">Voir le document</a></p>
-          </div>
-        </div>
-
-        <div class="timeline-event" data-date="2018-01-15" data-keywords="présentation,Marseille">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-4-date">15/01/2018</p>
-              <p class="event-lieu" id="event-4-lieu">Marseille, France</p>
-            </div>
-          </div>
-          <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-4-type">Présentation</h1>
-            <p class="event-description" id="event-4-desc">Intervention sur l'économie collaborative.</p>
-            <p class="event-link" id="event-4-link"><a href="#">Voir le document</a></p>
-          </div>
-        </div>
-
-        <div class="timeline-event" data-date="2019-04-10" data-keywords="colloque,Nantes">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-5-date">10/04/2019</p>
-              <p class="event-lieu" id="event-5-lieu">Nantes, France</p>
-            </div>
-          </div>
-          <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-5-type">Colloque</h1>
-            <p class="event-description" id="event-5-desc">Présentation sur la régulation financière.</p>
-            <p class="event-link" id="event-5-link"><a href="#">Voir le document</a></p>
-          </div>
-        </div>
-
-        <div class="timeline-event" data-date="2020-07-22" data-keywords="présentation,Paris">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-6-date">22/07/2020</p>
-              <p class="event-lieu" id="event-6-lieu">Paris, France</p>
-            </div>
-          </div>
-          <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-6-type">Présentation</h1>
-            <p class="event-description" id="event-6-desc">Communication sur l'économie durable.</p>
-            <p class="event-link" id="event-6-link"><a href="#">Voir le document</a></p>
-          </div>
-        </div>
-
-        <div class="timeline-event" data-date="2020-11-05" data-keywords="colloque,Lille">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-7-date">05/11/2020</p>
-              <p class="event-lieu" id="event-7-lieu">Lille, France</p>
-            </div>
-          </div>
-          <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-7-type">Colloque</h1>
-            <p class="event-description" id="event-7-desc">Intervention sur les nouvelles technologies.</p>
-            <p class="event-link" id="event-7-link"><a href="#">Voir le document</a></p>
-          </div>
-        </div>
-
-        <div class="timeline-event" data-date="2021-03-18" data-keywords="présentation,Strasbourg">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-8-date">18/03/2021</p>
-              <p class="event-lieu" id="event-8-lieu">Strasbourg, France</p>
-            </div>
-          </div>
-          <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-8-type">Présentation</h1>
-            <p class="event-description" id="event-8-desc">Conférence sur la finance internationale.</p>
-            <p class="event-link" id="event-8-link"><a href="#">Voir le document</a></p>
-          </div>
+          <div class="event-right"><h1 class="event-type" id="event-10-type">Présentation</h1><p class="event-description" id="event-10-desc">Communication sur la digitalisation des services.</p><p class="event-link" id="event-10-link"><a href="#">Voir le document</a></p></div>
         </div>
 
         <div class="timeline-event" data-date="2022-05-30" data-keywords="colloque,Toulouse">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-9-date">30/05/2022</p>
-              <p class="event-lieu" id="event-9-lieu">Toulouse, France</p>
-            </div>
-          </div>
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-9-date">30/05/2022</p><p class="event-lieu" id="event-9-lieu">Toulouse, France</p></div></div>
           <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-9-type">Colloque</h1>
-            <p class="event-description" id="event-9-desc">Présentation sur les modèles économiques innovants.</p>
-            <p class="event-link" id="event-9-link"><a href="#">Voir le document</a></p>
-          </div>
+          <div class="event-right"><h1 class="event-type" id="event-9-type">Colloque</h1><p class="event-description" id="event-9-desc">Présentation sur les modèles économiques innovants.</p><p class="event-link" id="event-9-link"><a href="#">Voir le document</a></p></div>
         </div>
 
-        <div class="timeline-event" data-date="2023-02-14" data-keywords="présentation,Nice">
-          <div class="event-left">
-            <div class="event-card">
-              <p class="event-date" id="event-10-date">14/02/2023</p>
-              <p class="event-lieu" id="event-10-lieu">Nice, France</p>
-            </div>
-          </div>
+        <div class="timeline-event" data-date="2021-03-18" data-keywords="présentation,Strasbourg">
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-8-date">18/03/2021</p><p class="event-lieu" id="event-8-lieu">Strasbourg, France</p></div></div>
           <div class="timeline-dot"></div>
-          <div class="event-right">
-            <h1 class="event-type" id="event-10-type">Présentation</h1>
-            <p class="event-description" id="event-10-desc">Communication sur la digitalisation des services.</p>
-            <p class="event-link" id="event-10-link"><a href="#">Voir le document</a></p>
-          </div>
+          <div class="event-right"><h1 class="event-type" id="event-8-type">Présentation</h1><p class="event-description" id="event-8-desc">Conférence sur la finance internationale.</p><p class="event-link" id="event-8-link"><a href="#">Voir le document</a></p></div>
+        </div>
+
+        <div class="timeline-event" data-date="2020-11-05" data-keywords="colloque,Lille">
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-7-date">05/11/2020</p><p class="event-lieu" id="event-7-lieu">Lille, France</p></div></div>
+          <div class="timeline-dot"></div>
+          <div class="event-right"><h1 class="event-type" id="event-7-type">Colloque</h1><p class="event-description" id="event-7-desc">Intervention sur les nouvelles technologies.</p><p class="event-link" id="event-7-link"><a href="#">Voir le document</a></p></div>
+        </div>
+
+        <div class="timeline-event" data-date="2020-07-22" data-keywords="présentation,Paris">
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-6-date">22/07/2020</p><p class="event-lieu" id="event-6-lieu">Paris, France</p></div></div>
+          <div class="timeline-dot"></div>
+          <div class="event-right"><h1 class="event-type" id="event-6-type">Présentation</h1><p class="event-description" id="event-6-desc">Communication sur l'économie durable.</p><p class="event-link" id="event-6-link"><a href="#">Voir le document</a></p></div>
+        </div>
+
+        <div class="timeline-event" data-date="2019-04-10" data-keywords="colloque,Nantes">
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-5-date">10/04/2019</p><p class="event-lieu" id="event-5-lieu">Nantes, France</p></div></div>
+          <div class="timeline-dot"></div>
+          <div class="event-right"><h1 class="event-type" id="event-5-type">Colloque</h1><p class="event-description" id="event-5-desc">Présentation sur la régulation financière.</p><p class="event-link" id="event-5-link"><a href="#">Voir le document</a></p></div>
+        </div>
+
+        <div class="timeline-event" data-date="2018-01-15" data-keywords="présentation,Marseille">
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-4-date">15/01/2018</p><p class="event-lieu" id="event-4-lieu">Marseille, France</p></div></div>
+          <div class="timeline-dot"></div>
+          <div class="event-right"><h1 class="event-type" id="event-4-type">Présentation</h1><p class="event-description" id="event-4-desc">Intervention sur l'économie collaborative.</p><p class="event-link" id="event-4-link"><a href="#">Voir le document</a></p></div>
+        </div>
+
+        <div class="timeline-event" data-date="2017-09-05" data-keywords="colloque,Bordeaux">
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-3-date">05/09/2017</p><p class="event-lieu" id="event-3-lieu">Bordeaux, France</p></div></div>
+          <div class="timeline-dot"></div>
+          <div class="event-right"><h1 class="event-type" id="event-3-type">Colloque</h1><p class="event-description" id="event-3-desc">Conférence sur les marchés financiers.</p><p class="event-link" id="event-3-link"><a href="#">Voir le document</a></p></div>
+        </div>
+
+        <div class="timeline-event" data-date="2016-06-20" data-keywords="présentation,Lyon">
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-2-date">20/06/2016</p><p class="event-lieu" id="event-2-lieu">Lyon, France</p></div></div>
+          <div class="timeline-dot"></div>
+          <div class="event-right"><h1 class="event-type" id="event-2-type">Présentation</h1><p class="event-description" id="event-2-desc">Communication sur l'impact des politiques publiques.</p><p class="event-link" id="event-2-link"><a href="#">Voir le document</a></p></div>
+        </div>
+
+        <div class="timeline-event" data-date="2015-03-12" data-keywords="colloque,Paris">
+          <div class="event-left"><div class="event-card"><p class="event-date" id="event-1-date">12/03/2015</p><p class="event-lieu" id="event-1-lieu">Paris, France</p></div></div>
+          <div class="timeline-dot"></div>
+          <div class="event-right"><h1 class="event-type" id="event-1-type">Colloque</h1><p class="event-description" id="event-1-desc">Présentation sur l'économie numérique.</p><p class="event-link" id="event-1-link"><a href="#">Voir le document</a></p></div>
         </div>
 
       </div>
@@ -272,51 +158,37 @@
   <div id="footer-placeholder"></div>
 
   <script>
-    function loadHTML(id, url) {
-      fetch(url)
-        .then(r => { if (!r.ok) throw new Error('Erreur de chargement'); return r.text(); })
-        .then(html => { document.getElementById(id).innerHTML = html; })
-        .catch(err => console.error('Erreur:', err));
-    }
-    loadHTML('header-placeholder', 'header.html');
-    loadHTML('footer-placeholder', 'footer.html');
+    function loadHTML(id,url){fetch(url).then(r=>{if(!r.ok)throw new Error('Erreur de chargement');return r.text();}).then(html=>{document.getElementById(id).innerHTML=html;}).catch(err=>console.error('Erreur:',err));}
+    loadHTML('header-placeholder','header.html');
+    loadHTML('footer-placeholder','footer.html');
 
-    // Filtrage : mots-clés + dates
-    const $search = document.getElementById('search-keyword');
-    const $start  = document.getElementById('date-start');
-    const $end    = document.getElementById('date-end');
-    const $reset  = document.getElementById('btn-reset');
-    const $events = Array.from(document.querySelectorAll('.timeline-event'));
+    const $search=document.getElementById('search-keyword');
+    const $start=document.getElementById('date-start');
+    const $end=document.getElementById('date-end');
+    const $reset=document.getElementById('btn-reset');
+    const $events=Array.from(document.querySelectorAll('.timeline-event'));
 
-    function normalize(str){ return (str || '').toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,''); }
+    function normalize(str){return(str||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'');}
 
-    function applyFilters() {
-      const kw = normalize($search.value);
-      const hasKw = kw.length > 0;
+    function applyFilters(){
+      const kw=normalize($search.value);
+      const hasKw=kw.length>0;
+      const startDate=$start.value?new Date($start.value):null;
+      const endDate=$end.value?new Date($end.value):null;
 
-      const start = $start.value ? new Date($start.value) : null;
-      const end   = $end.value   ? new Date($end.value)   : null;
-
-      $events.forEach(ev => {
-        const evDate = new Date(ev.getAttribute('data-date'));
-        let visible = true;
-        if (start && evDate < start) visible = false;
-        if (end && evDate > end)     visible = false;
-        if (hasKw) {
-          const bag = normalize(
-            (ev.getAttribute('data-keywords') || '') + ' ' +
-            ev.querySelector('.event-description').textContent
-          );
-          if (!bag.includes(kw)) visible = false;
-        }
-        ev.style.display = visible ? 'contents' : 'none';
+      $events.forEach(ev=>{
+        const evDate=new Date(ev.dataset.date);
+        const evKw=normalize(ev.dataset.keywords);
+        let visible=true;
+        if(hasKw && !evKw.includes(kw)) visible=false;
+        if(startDate && evDate<startDate) visible=false;
+        if(endDate && evDate>endDate) visible=false;
+        ev.style.display=visible?'grid':'none';
       });
     }
 
-    $search.addEventListener('input', applyFilters);
-    $start.addEventListener('change', applyFilters);
-    $end.addEventListener('change', applyFilters);
-    $reset.addEventListener('click', ()=>{
+    [$search,$start,$end].forEach(el=>el.addEventListener('input',applyFilters));
+    $reset.addEventListener('click',()=>{
       $search.value=''; $start.value=''; $end.value='';
       applyFilters();
     });
