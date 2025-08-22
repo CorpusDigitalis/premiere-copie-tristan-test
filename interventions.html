@@ -1,275 +1,536 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Interventions & Colloques</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interventions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
   <style>
-    /* ---- Zone outil fixe ---- */
+    /* ====== Spécifique à la page Interventions (n'altère pas style.css) ====== */
+
+    /* Zone outils fixe (haut droite desktop / centrée mobile) */
     #tools-box {
       position: fixed;
       top: 1rem;
       right: 1rem;
-      background: #fff;
-      padding: 1rem;
+      width: 260px;
+      background: #ffffff;
       border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       z-index: 1000;
-      width: 220px;
     }
-
-    #tools-box input, #tools-box button {
+    #tools-title {
+      margin: 0 0 .5rem 0;
+      font-size: 1rem;
+      letter-spacing: .02em;
+      color: #222;
+    }
+    .tools-group {
+      margin-bottom: .75rem;
+    }
+    .tools-label {
+      display: block;
+      font-size: .9rem;
+      margin-bottom: .25rem;
+      color: #222;
+    }
+    #search-keyword, #date-start, #date-end {
       width: 100%;
-      margin-bottom: 0.75rem;
-      padding: 0.4rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-family: 'Alata', sans-serif;
-    }
-
-    #tools-box button {
-      background: #1f1f1f;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.2s ease, background 0.1s ease;
-    }
-    #tools-box button:hover { transform: scale(0.95); }
-    #tools-box button:active { background: #444; transform: scale(0.92); }
-
-    /* ---- Contenu principal ---- */
-    .container {
-      max-width: 960px;
-      margin: 2rem auto;
-      padding: 1rem;
-    }
-
-    h1 {
-      margin-bottom: 0.5rem;
-    }
-    p.page-desc {
-      margin-bottom: 2rem;
-    }
-
-    /* ---- Timeline ---- */
-    .timeline {
-      position: relative;
-      margin: 2rem auto;
-      padding-left: 40%;
-    }
-
-    .timeline::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 2px;
-      height: 100%;
-      background: linear-gradient(to bottom, rgba(31,31,31,0) 0%, #1f1f1f 10%);
-    }
-
-    .timeline-event {
-      display: flex;
-      align-items: flex-start;
-      margin: 2rem 0;
-      position: relative;
-    }
-
-    .timeline-event::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 12px;
-      height: 12px;
-      background: #1f1f1f;
-      border-radius: 50%;
-      top: 0.8rem;
-    }
-
-    .event-box {
-      background: #fff;
+      padding: .45rem .55rem;
       border: 1px solid #ddd;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 1rem;
-      width: 40%;
-      text-align: center;
-      margin-right: 2rem;
+      background: #fff;
+      font-family: 'Alata', sans-serif;
+      letter-spacing: .02em;
     }
-
-    .event-date {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-
-    .event-location {
-      font-style: italic;
-    }
-
-    .event-details {
-      flex: 1;
-      padding-left: 2rem;
-    }
-
-    .event-type {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-
-    .event-description {
-      margin-bottom: 0.5rem;
-    }
-
-    .event-link a {
-      color: #1f1f1f;
-      text-decoration: underline;
-    }
-
-    /* ---- Fade-out au scroll ---- */
-    .fade-mask {
-      position: fixed;
-      top: 0;
-      left: 0;
+    #btn-reset {
       width: 100%;
-      height: auto;
-      min-height: 120px; /* ajusté par JS pour coller à la zone outils */
-      background: linear-gradient(to bottom, #fefaf5 0%, rgba(254,250,245,0) 100%);
+      padding: .5rem .75rem;
+      border: none;
+      border-radius: 8px;
+      background: #1f1f1f;
+      color: #fff;
+      letter-spacing: .02em;
+      cursor: pointer;
+      transition: transform .2s ease, background .1s ease;
+    }
+    #btn-reset:hover { transform: scale(.98); }
+    #btn-reset:active { background: #444; transform: scale(.96); }
+
+    /* Fade-out de tête de page (disparition progressive vers la couleur de fond) */
+    #fade-mask {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      height: 140px; /* ajusté en JS selon la hauteur de #tools-box */
       pointer-events: none;
       z-index: 500;
+      /* du fond (#fefaf5) à transparent */
+      background: linear-gradient(to bottom, #fefaf5 0%, rgba(254,250,245,0) 100%);
     }
 
-    /* ---- Responsive ---- */
-    @media (max-width: 768px) {
+    /* Timeline wrapper dans .container existante */
+    #timeline-wrapper {
+      position: relative;
+      margin-top: 2rem;
+    }
+
+    /* Grille de la timeline : gauche (box), centre (ligne), droite (texte) */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: 1fr 2px 1fr;
+      column-gap: 2rem;
+      row-gap: 2rem;
+      position: relative;
+    }
+
+    /* Ligne verticale centrale (avec dégradé d'amorce sous le titre/intro) */
+    #timeline-line {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(to bottom, rgba(31,31,31,0) 0px, #1f1f1f 80px, #1f1f1f 100%);
+      /* le dégradé d’entrée (80px) rend l’apparition progressive sous le titre/intro */
+    }
+
+    /* Chaque événement occupe 1 ligne de la grille (gauche | centre | droite) */
+    .timeline-event {
+      display: contents; /* permet d'utiliser la grille sur 3 colonnes avec un seul item logique */
+    }
+
+    /* Point noir minimaliste sur la ligne (au centre de la rangée) */
+    .timeline-dot {
+      grid-column: 2;
+      position: relative;
+      height: 0; /* on place juste le dot via ::after */
+    }
+    .timeline-dot::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: .5rem; /* aligné légèrement sous le haut de la rangée */
+      transform: translate(-50%, -50%);
+      width: 10px; height: 10px;
+      background: #1f1f1f;
+      border-radius: 50%;
+    }
+
+    /* Côté gauche : box blanche fixe, même largeur, centrée, date/lieu centrés */
+    .event-left {
+      grid-column: 1;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .event-card {
+      width: 380px;
+      max-width: 100%;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .event-date {
+      font-weight: 700;
+      margin: 0 0 .35rem 0;
+      color: #222;
+    }
+    .event-lieu {
+      margin: 0;
+      color: #222;
+      opacity: .9;
+    }
+
+    /* Côté droit : pas de box, juste le texte (type en h1, description, lien) */
+    .event-right {
+      grid-column: 3;
+      align-self: start;
+    }
+    .event-type {
+      font-size: 1.25rem;
+      margin: 0 0 .35rem 0;
+      color: #222;
+      letter-spacing: .015em;
+    }
+    .event-description {
+      margin: 0 0 .35rem 0;
+      color: #222;
+      letter-spacing: .015em;
+      line-height: 1.6;
+    }
+    .event-link a {
+      text-decoration: none;
+      color: #0077cc;
+      font-weight: 700;
+      transition: color .2s ease;
+    }
+    .event-link a:hover { color: #005999; }
+
+    /* Point final en bas, juste avant le footer */
+    #timeline-end-dot {
+      position: absolute;
+      left: 50%;
+      bottom: -8px; /* léger chevauchement pour l'effet “fin de ligne” */
+      transform: translateX(-50%);
+      width: 10px; height: 10px;
+      background: #1f1f1f; border-radius: 50%;
+    }
+
+    /* Réactivité mobile : outils centrés, timeline en pile (gauche puis droite) */
+    @media (max-width: 880px) {
       #tools-box {
-        position: fixed;
-        top: 0.5rem;
         right: 50%;
         transform: translateX(50%);
-        width: 90%;
+        width: min(92vw, 420px);
       }
-      .timeline {
-        padding-left: 0;
+      .timeline-grid {
+        grid-template-columns: 1fr; /* on empile */
       }
-      .event-box {
-        width: 80%;
-        margin: 0 auto 1rem auto;
-      }
-      .event-details {
-        padding-left: 0;
-        text-align: center;
-      }
+      #timeline-line { left: 16px; transform: none; } /* décalée en mobile pour lisibilité */
+      .timeline-dot { grid-column: 1; }
+      .timeline-dot::after { left: 16px; transform: translate(-50%, -50%); }
+      .event-left { grid-column: 1; justify-content: flex-start; }
+      .event-right { grid-column: 1; margin-top: .5rem; }
+      .event-card { width: 100%; }
+      #timeline-end-dot { left: 16px; transform: translateX(-50%); }
     }
   </style>
 </head>
-<body>
-  <header>
-    <nav>
-      <div><a href="index.html" class="no-animation">Nom du Professeur</a></div>
-      <div>
-        <a href="publications.html">Publications</a>
-        <a href="interventions.html">Interventions</a>
-      </div>
-    </nav>
-  </header>
+<body style="outline: none;">
 
-  <div id="tools-box">
-    <input type="text" id="search-keyword" placeholder="Mots-clés…">
-    <input type="date" id="date-start">
-    <input type="date" id="date-end">
-    <button id="reset-filters">Réinitialiser</button>
+  <!-- Header chargé dynamiquement comme sur tes autres pages -->
+  <div id="header-placeholder"></div>
+
+  <div class="container">
+    <h1 id="titre-interventions">Interventions & Colloques</h1>
+    <p id="texte-intro-interventions" class="publications-text">
+      Présentation chronologique des interventions, colloques et communications du professeur. Filtrez par période ou par mots-clés.
+    </p>
+
+    <!-- Zone outils fixe -->
+    <aside id="tools-box" aria-label="Outils de filtrage">
+      <h2 id="tools-title">Filtrer</h2>
+
+      <div class="tools-group">
+        <label for="search-keyword" class="tools-label" id="label-mots-cles">Mots-clés</label>
+        <input type="text" id="search-keyword" placeholder="ex. colloque, Paris, éducation…" />
+      </div>
+
+      <div class="tools-group">
+        <span class="tools-label" id="label-periode">Période</span>
+        <input type="date" id="date-start" aria-label="Date de début" />
+        <div style="height:.5rem;"></div>
+        <input type="date" id="date-end" aria-label="Date de fin" />
+      </div>
+
+      <button id="btn-reset" type="button">Réinitialiser</button>
+    </aside>
+
+    <!-- Masque de fade-out (s’ajuste à la taille de la zone outils) -->
+    <div id="fade-mask" aria-hidden="true"></div>
+
+    <!-- Timeline -->
+    <section id="timeline-wrapper" aria-label="Chronologie des interventions">
+      <div id="timeline-line" aria-hidden="true"></div>
+      <div class="timeline-grid" id="timeline-grid">
+
+        <!-- === ÉVÉNEMENT 1 === -->
+        <div class="timeline-event" data-date="2025-03-15" data-keywords="colloque paris sorbonne économie">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-1-date">15 mars 2025</p>
+              <p class="event-lieu" id="intervention-1-lieu">Paris — Sorbonne</p>
+            </div>
+          </div>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-1-type">Colloque</h1>
+            <p class="event-description" id="intervention-1-description">
+              Intervention sur les effets de l’incitation publique dans la recherche appliquée.
+            </p>
+            <p class="event-link" id="intervention-1-lien">
+              <a href="docs/intervention-2025-03-15.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- === ÉVÉNEMENT 2 === -->
+        <div class="timeline-event" data-date="2024-11-10" data-keywords="conférence lyon ens pédagogie">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-2-date">10 nov. 2024</p>
+              <p class="event-lieu" id="intervention-2-lieu">Lyon — ENS</p>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-2-type">Conférence</h1>
+            <p class="event-description" id="intervention-2-description">
+              Conférence invitée sur l’évolution des pratiques pédagogiques numériques.
+            </p>
+            <p class="event-link" id="intervention-2-lien">
+              <a href="docs/intervention-2024-11-10.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- === ÉVÉNEMENT 3 === -->
+        <div class="timeline-event" data-date="2023-06-02" data-keywords="séminaire marseille laboratoire méthode">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-3-date">2 juin 2023</p>
+              <p class="event-lieu" id="intervention-3-lieu">Marseille — Laboratoire CERES</p>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-3-type">Séminaire</h1>
+            <p class="event-description" id="intervention-3-description">
+              Atelier méthodologique autour des jeux de données mixtes et de leur valorisation.
+            </p>
+            <p class="event-link" id="intervention-3-lien">
+              <a href="docs/intervention-2023-06-02.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- === ÉVÉNEMENT 4 === -->
+        <div class="timeline-event" data-date="2022-02-18" data-keywords="table ronde bordeaux politiques publiques">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-4-date">18 févr. 2022</p>
+              <p class="event-lieu" id="intervention-4-lieu">Bordeaux — Hôtel de Région</p>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-4-type">Table ronde</h1>
+            <p class="event-description" id="intervention-4-description">
+              Débat sur l’évaluation des politiques publiques territoriales.
+            </p>
+            <p class="event-link" id="intervention-4-lien">
+              <a href="docs/intervention-2022-02-18.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- === ÉVÉNEMENT 5 === -->
+        <div class="timeline-event" data-date="2021-10-07" data-keywords="présentation toulouse université innovation">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-5-date">7 oct. 2021</p>
+              <p class="event-lieu" id="intervention-5-lieu">Toulouse — Université</p>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-5-type">Présentation</h1>
+            <p class="event-description" id="intervention-5-description">
+              Présentation des résultats d’un projet sur l’innovation ouverte.
+            </p>
+            <p class="event-link" id="intervention-5-lien">
+              <a href="docs/intervention-2021-10-07.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- === ÉVÉNEMENT 6 === -->
+        <div class="timeline-event" data-date="2020-05-25" data-keywords="colloque nantes santé économie">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-6-date">25 mai 2020</p>
+              <p class="event-lieu" id="intervention-6-lieu">Nantes — CHU</p>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-6-type">Colloque</h1>
+            <p class="event-description" id="intervention-6-description">
+              Économie de la santé : arbitrages et équité en période de contrainte.
+            </p>
+            <p class="event-link" id="intervention-6-lien">
+              <a href="docs/intervention-2020-05-25.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- === ÉVÉNEMENT 7 === -->
+        <div class="timeline-event" data-date="2019-03-12" data-keywords="séminaire lille marché travail">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-7-date">12 mars 2019</p>
+              <p class="event-lieu" id="intervention-7-lieu">Lille — Faculté de Droit</p>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-7-type">Séminaire</h1>
+            <p class="event-description" id="intervention-7-description">
+              Marché du travail et transformations sectorielles : dynamiques récentes.
+            </p>
+            <p class="event-link" id="intervention-7-lien">
+              <a href="docs/intervention-2019-03-12.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- === ÉVÉNEMENT 8 === -->
+        <div class="timeline-event" data-date="2018-06-28" data-keywords="conférence nice data science">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-8-date">28 juin 2018</p>
+              <p class="event-lieu" id="intervention-8-lieu">Nice — Observatoire</p>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-8-type">Conférence</h1>
+            <p class="event-description" id="intervention-8-description">
+              Data science pour l’aide à la décision : cas d’usage en sciences sociales.
+            </p>
+            <p class="event-link" id="intervention-8-lien">
+              <a href="docs/intervention-2018-06-28.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- === ÉVÉNEMENT 9 === -->
+        <div class="timeline-event" data-date="2016-11-04" data-keywords="présentation bordeaux finance comportementale">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-9-date">4 nov. 2016</p>
+              <p class="event-lieu" id="intervention-9-lieu">Bordeaux — Institut d’Éco.</p>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-9-type">Présentation</h1>
+            <p class="event-description" id="intervention-9-description">
+              Biais comportementaux et décisions financières des ménages : revue critique.
+            </p>
+            <p class="event-link" id="intervention-9-lien">
+              <a href="docs/intervention-2016-11-04.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- === ÉVÉNEMENT 10 === -->
+        <div class="timeline-event" data-date="2015-01-22" data-keywords="table ronde toulouse éducation numérique">
+          <div class="event-left">
+            <div class="event-card">
+              <p class="event-date" id="intervention-10-date">22 janv. 2015</p>
+              <p class="event-lieu" id="intervention-10-lieu">Toulouse — IEP</p>
+            </div>
+          </div>
+          <div class="timeline-dot"></div>
+          <div class="event-right">
+            <h1 class="event-type" id="intervention-10-type">Table ronde</h1>
+            <p class="event-description" id="intervention-10-description">
+              Éducation et numérique : mesurer les apports réels sur le long terme.
+            </p>
+            <p class="event-link" id="intervention-10-lien">
+              <a href="docs/intervention-2015-01-22.pdf" target="_blank" rel="noopener noreferrer">Documentation</a>
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Point terminal de la ligne, juste au-dessus du footer -->
+      <div id="timeline-end-dot" aria-hidden="true"></div>
+    </section>
   </div>
 
-  <div class="fade-mask" id="fade-mask"></div>
+  <!-- Footer chargé dynamiquement comme sur tes autres pages -->
+  <div id="footer-placeholder"></div>
 
-  <main class="container">
-    <h1>Interventions & Colloques</h1>
-    <p class="page-desc">Retrouvez ici les interventions, colloques et présentations majeures de la carrière.</p>
-
-    <div class="timeline" id="timeline">
-
-      <div class="timeline-event" data-date="2024-03-15" data-keywords="colloque recherche paris">
-        <div class="event-box">
-          <div class="event-date" id="event-date-1">15 mars 2024</div>
-          <div class="event-location" id="event-location-1">Paris, Sorbonne</div>
-        </div>
-        <div class="event-details">
-          <div class="event-type" id="event-type-1">Colloque</div>
-          <p class="event-description" id="event-description-1">Présentation sur l’impact de la recherche en sciences sociales.</p>
-          <div class="event-link" id="event-link-1"><a href="docs/colloque2024.pdf" target="_blank">Documentation</a></div>
-        </div>
-      </div>
-
-      <div class="timeline-event" data-date="2022-11-10" data-keywords="conférence lyon éducation">
-        <div class="event-box">
-          <div class="event-date" id="event-date-2">10 nov. 2022</div>
-          <div class="event-location" id="event-location-2">Lyon, ENS</div>
-        </div>
-        <div class="event-details">
-          <div class="event-type" id="event-type-2">Conférence</div>
-          <p class="event-description" id="event-description-2">Intervention sur les nouvelles méthodes pédagogiques.</p>
-          <div class="event-link" id="event-link-2"><a href="docs/conference2022.pdf" target="_blank">Documentation</a></div>
-        </div>
-      </div>
-
-    </div>
-  </main>
-
-  <footer>
-    <div class="footer-links">
-      <a href="#">Mentions légales</a>
-      <a href="#">Contact</a>
-    </div>
-    <p class="small-text">© 2025 Professeur Exemple</p>
-  </footer>
-
+  <!-- Chargement header/footer + scripts communs -->
   <script>
-    // ---- Ajuste le fade pour correspondre à la hauteur zone outils ----
-    function adjustFade() {
-      const tools = document.getElementById("tools-box");
-      const fade = document.getElementById("fade-mask");
-      fade.style.height = (tools.offsetHeight + 40) + "px";
+    // Reprend le pattern de tes pages : on charge header.html et footer.html
+    function loadHTML(id, url) {
+      fetch(url)
+        .then(r => { if (!r.ok) throw new Error('Erreur de chargement'); return r.text(); })
+        .then(html => { document.getElementById(id).innerHTML = html; })
+        .catch(err => console.error('Erreur:', err));
     }
-    window.addEventListener("load", adjustFade);
-    window.addEventListener("resize", adjustFade);
+    loadHTML('header-placeholder', 'header.html');
+    loadHTML('footer-placeholder', 'footer.html');
+  </script>
+  <script src="modifications.js"></script>
 
-    // ---- Filtrage par mot-clé et date ----
-    const searchInput = document.getElementById("search-keyword");
-    const dateStart = document.getElementById("date-start");
-    const dateEnd = document.getElementById("date-end");
-    const resetBtn = document.getElementById("reset-filters");
-    const events = document.querySelectorAll(".timeline-event");
+  <!-- JS local : ajustement du fade + filtrage -->
+  <script>
+    // Ajuste la hauteur du masque de fade pour qu'il s'arrête avant la toolbox
+    function adjustFadeToTools() {
+      const tools = document.getElementById('tools-box');
+      const fade = document.getElementById('fade-mask');
+      if (!tools || !fade) return;
+      const h = tools.offsetHeight;
+      // marge légère pour le confort visuel
+      fade.style.height = (h + 32) + 'px';
+    }
+    window.addEventListener('load', adjustFadeToTools);
+    window.addEventListener('resize', adjustFadeToTools);
+
+    // Filtrage : par mots-clés + plage de dates (inclusives)
+    const $search = document.getElementById('search-keyword');
+    const $start  = document.getElementById('date-start');
+    const $end    = document.getElementById('date-end');
+    const $reset  = document.getElementById('btn-reset');
+    const $events = Array.from(document.querySelectorAll('.timeline-event'));
+
+    function normalize(str){ return (str || '').toLowerCase().normalize('NFD').replace(/\\p{Diacritic}/gu,''); }
 
     function applyFilters() {
-      const keyword = searchInput.value.toLowerCase();
-      const start = dateStart.value ? new Date(dateStart.value) : null;
-      const end = dateEnd.value ? new Date(dateEnd.value) : null;
+      const kw = normalize($search.value);
+      const hasKw = kw.length > 0;
 
-      events.forEach(ev => {
-        const evDate = new Date(ev.dataset.date);
-        const evKeywords = ev.dataset.keywords.toLowerCase();
+      const start = $start.value ? new Date($start.value) : null;
+      const end   = $end.value   ? new Date($end.value)   : null;
 
+      $events.forEach(ev => {
+        const evDate = new Date(ev.getAttribute('data-date'));
         let visible = true;
-        if (keyword && !evKeywords.includes(keyword)) visible = false;
-        if (start && evDate < start) visible = false;
-        if (end && evDate > end) visible = false;
 
-        ev.style.display = visible ? "flex" : "none";
+        // Filtre date
+        if (start && evDate < start) visible = false;
+        if (end && evDate > end)     visible = false;
+
+        // Filtre mots-clés : sur data-keywords + texte utile dans la ligne
+        if (hasKw) {
+          const bag = normalize(
+            (ev.getAttribute('data-keywords') || '') + ' ' +
+            ev.querySelector('.event-date')?.textContent + ' ' +
+            ev.querySelector('.event-lieu')?.textContent + ' ' +
+            ev.querySelector('.event-type')?.textContent + ' ' +
+            ev.querySelector('.event-description')?.textContent
+          );
+          if (!bag.includes(kw)) visible = false;
+        }
+
+        ev.style.display = visible ? 'contents' : 'none';
       });
     }
 
-    searchInput.addEventListener("input", applyFilters);
-    dateStart.addEventListener("change", applyFilters);
-    dateEnd.addEventListener("change", applyFilters);
+    $search.addEventListener('input', applyFilters);
+    $start.addEventListener('change', applyFilters);
+    $end.addEventListener('change', applyFilters);
 
-    resetBtn.addEventListener("click", () => {
-      searchInput.value = "";
-      dateStart.value = "";
-      dateEnd.value = "";
-      events.forEach(ev => ev.style.display = "flex");
+    $reset.addEventListener('click', () => {
+      $search.value = '';
+      $start.value = '';
+      $end.value = '';
+      applyFilters();
     });
+
+    // 1er rendu
+    applyFilters();
   </script>
 </body>
 </html>
