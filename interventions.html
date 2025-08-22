@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Interventions & Colloques</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* ---- Zone outil fixe ---- */
+    #tools-box {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: #fff;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      z-index: 1000;
+      width: 220px;
+    }
+
+    #tools-box input, #tools-box button {
+      width: 100%;
+      margin-bottom: 0.75rem;
+      padding: 0.4rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: 'Alata', sans-serif;
+    }
+
+    #tools-box button {
+      background: #1f1f1f;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.1s ease;
+    }
+    #tools-box button:hover { transform: scale(0.95); }
+    #tools-box button:active { background: #444; transform: scale(0.92); }
+
+    /* ---- Contenu principal ---- */
+    .container {
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    h1 {
+      margin-bottom: 0.5rem;
+    }
+    p.page-desc {
+      margin-bottom: 2rem;
+    }
+
+    /* ---- Timeline ---- */
+    .timeline {
+      position: relative;
+      margin: 2rem auto;
+      padding-left: 40%;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(31,31,31,0) 0%, #1f1f1f 10%);
+    }
+
+    .timeline-event {
+      display: flex;
+      align-items: flex-start;
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .timeline-event::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      background: #1f1f1f;
+      border-radius: 50%;
+      top: 0.8rem;
+    }
+
+    .event-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 1rem;
+      width: 40%;
+      text-align: center;
+      margin-right: 2rem;
+    }
+
+    .event-date {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-location {
+      font-style: italic;
+    }
+
+    .event-details {
+      flex: 1;
+      padding-left: 2rem;
+    }
+
+    .event-type {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-description {
+      margin-bottom: 0.5rem;
+    }
+
+    .event-link a {
+      color: #1f1f1f;
+      text-decoration: underline;
+    }
+
+    /* ---- Fade-out au scroll ---- */
+    .fade-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      min-height: 120px; /* ajusté par JS pour coller à la zone outils */
+      background: linear-gradient(to bottom, #fefaf5 0%, rgba(254,250,245,0) 100%);
+      pointer-events: none;
+      z-index: 500;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+      #tools-box {
+        position: fixed;
+        top: 0.5rem;
+        right: 50%;
+        transform: translateX(50%);
+        width: 90%;
+      }
+      .timeline {
+        padding-left: 0;
+      }
+      .event-box {
+        width: 80%;
+        margin: 0 auto 1rem auto;
+      }
+      .event-details {
+        padding-left: 0;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div><a href="index.html" class="no-animation">Nom du Professeur</a></div>
+      <div>
+        <a href="publications.html">Publications</a>
+        <a href="interventions.html">Interventions</a>
+      </div>
+    </nav>
+  </header>
+
+  <div id="tools-box">
+    <input type="text" id="search-keyword" placeholder="Mots-clés…">
+    <input type="date" id="date-start">
+    <input type="date" id="date-end">
+    <button id="reset-filters">Réinitialiser</button>
+  </div>
+
+  <div class="fade-mask" id="fade-mask"></div>
+
+  <main class="container">
+    <h1>Interventions & Colloques</h1>
+    <p class="page-desc">Retrouvez ici les interventions, colloques et présentations majeures de la carrière.</p>
+
+    <div class="timeline" id="timeline">
+
+      <div class="timeline-event" data-date="2024-03-15" data-keywords="colloque recherche paris">
+        <div class="event-box">
+          <div class="event-date" id="event-date-1">15 mars 2024</div>
+          <div class="event-location" id="event-location-1">Paris, Sorbonne</div>
+        </div>
+        <div class="event-details">
+          <div class="event-type" id="event-type-1">Colloque</div>
+          <p class="event-description" id="event-description-1">Présentation sur l’impact de la recherche en sciences sociales.</p>
+          <div class="event-link" id="event-link-1"><a href="docs/colloque2024.pdf" target="_blank">Documentation</a></div>
+        </div>
+      </div>
+
+      <div class="timeline-event" data-date="2022-11-10" data-keywords="conférence lyon éducation">
+        <div class="event-box">
+          <div class="event-date" id="event-date-2">10 nov. 2022</div>
+          <div class="event-location" id="event-location-2">Lyon, ENS</div>
+        </div>
+        <div class="event-details">
+          <div class="event-type" id="event-type-2">Conférence</div>
+          <p class="event-description" id="event-description-2">Intervention sur les nouvelles méthodes pédagogiques.</p>
+          <div class="event-link" id="event-link-2"><a href="docs/conference2022.pdf" target="_blank">Documentation</a></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#">Mentions légales</a>
+      <a href="#">Contact</a>
+    </div>
+    <p class="small-text">© 2025 Professeur Exemple</p>
+  </footer>
+
+  <script>
+    // ---- Ajuste le fade pour correspondre à la hauteur zone outils ----
+    function adjustFade() {
+      const tools = document.getElementById("tools-box");
+      const fade = document.getElementById("fade-mask");
+      fade.style.height = (tools.offsetHeight + 40) + "px";
+    }
+    window.addEventListener("load", adjustFade);
+    window.addEventListener("resize", adjustFade);
+
+    // ---- Filtrage par mot-clé et date ----
+    const searchInput = document.getElementById("search-keyword");
+    const dateStart = document.getElementById("date-start");
+    const dateEnd = document.getElementById("date-end");
+    const resetBtn = document.getElementById("reset-filters");
+    const events = document.querySelectorAll(".timeline-event");
+
+    function applyFilters() {
+      const keyword = searchInput.value.toLowerCase();
+      const start = dateStart.value ? new Date(dateStart.value) : null;
+      const end = dateEnd.value ? new Date(dateEnd.value) : null;
+
+      events.forEach(ev => {
+        const evDate = new Date(ev.dataset.date);
+        const evKeywords = ev.dataset.keywords.toLowerCase();
+
+        let visible = true;
+        if (keyword && !evKeywords.includes(keyword)) visible = false;
+        if (start && evDate < start) visible = false;
+        if (end && evDate > end) visible = false;
+
+        ev.style.display = visible ? "flex" : "none";
+      });
+    }
+
+    searchInput.addEventListener("input", applyFilters);
+    dateStart.addEventListener("change", applyFilters);
+    dateEnd.addEventListener("change", applyFilters);
+
+    resetBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      dateStart.value = "";
+      dateEnd.value = "";
+      events.forEach(ev => ev.style.display = "flex");
+    });
+  </script>
+</body>
+</html>
