@@ -5,346 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tristan Arbona</title>
   <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet" />
+  <script defer data-domain="corpusdigitalis.github.io/premiere-copie-tristan-test" src="https://stats.corpusdigitalis.com/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
   <link rel="stylesheet" href="style.css" />
-  <script defer data-domain="tristan-arbona.corpusdigitalis.com" src="https://stats.corpusdigitalis.com/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
-
-  <style>
-    /* --- Timeline --- */
-    .timeline-container {
-      position: relative;
-      margin: 60px auto 100px auto;
-      padding: 20px 0;
-      width: 90%;
-      max-width: 1000px;
-    }
-
-    .timeline-line {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 100%;
-      background: black;
-    }
-
-    .timeline-event {
-      position: relative;
-      margin: 50px 0;
-      width: 100%;
-    }
-
-    .timeline-point {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 16px;
-      height: 16px;
-      background: black;
-      border-radius: 50%;
-      z-index: 2;
-    }
-
-    .event-left, .event-right {
-      width: 45%;
-      padding: 15px;
-    }
-
-    .event-left {
-      text-align: right;
-      float: left;
-    }
-
-    .event-right {
-      text-align: left;
-      float: right;
-    }
-
-    .event-box {
-      background: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .event-date {
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .event-lieu {
-      text-align: center;
-      font-style: italic;
-    }
-
-    .event-type {
-      font-size: 1.2em;
-      margin-bottom: 6px;
-    }
-
-    .event-description {
-      margin-bottom: 6px;
-    }
-
-    .event-link a {
-      color: #003366;
-      text-decoration: underline;
-    }
-
-    /* --- Zone de filtres --- */
-    .filters {
-      position: sticky;
-      top: 60px; /* sous le header */
-      background: white;
-      z-index: 100;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 30px;
-    }
-
-    .filters input[type="text"] {
-      flex: 1;
-      margin-right: 40px;
-      padding: 6px 10px;
-      font-size: 14px;
-    }
-
-    .filters input[type="date"] {
-      margin-left: 10px;
-      padding: 6px;
-      font-size: 14px;
-    }
-
-    .filters button {
-      margin-left: 15px;
-      padding: 6px 12px;
-      font-size: 14px;
-      border: none;
-      background: #000;
-      color: #fff;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    /* --- Responsive --- */
-    @media (max-width: 768px) {
-      .event-left, .event-right {
-        float: none;
-        width: 100%;
-        text-align: left;
-      }
-      .timeline-line {
-        left: 20px;
-        transform: none;
-      }
-      .timeline-point {
-        left: 20px;
-        transform: none;
-      }
-      .filters {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .filters input[type="text"] {
-        margin: 0 0 10px 0;
-        width: 100%;
-      }
-    }
-  </style>
 </head>
 <body style="outline: none;">
 
-  <!-- Header -->
+  <!-- Ici on charge dynamiquement le header -->
   <div id="header-placeholder"></div>
 
   <div class="container">
     <div class="main-content">
       <img src="portrait.jpg" alt="Portrait de Tristan Arbona" />
       <div class="description">
-        <h1 id="titre-accueil" style="text-align:center;">Bienvenue</h1>
+        <!-- ID ajouté ici -->
+        <h1 id="titre-accueil">Bienvenue</h1>
+
+        <!-- ID ajouté ici -->
         <p id="texte-description">
-          Je conçois des sites web professionnels sur mesure, pensés pour valoriser l’identité, les différents travaux et l’expertise de professionnels issus de divers secteurs.<br><br>
+          Je conçois des sites web professionnels sur mesure, pensés pour valoriser l’identité, les différents travaux et l’expertise de professionnels issus de divers secteurs.<br>
+          <br>
           Chaque site est développé de manière personnalisée, avec une attention portée à la lisibilité, à la simplicité d’usage et à l’autonomie du client.
         </p>
       </div>
     </div>
   </div>
 
-  <!-- Zone de filtres sticky -->
-  <div class="filters">
-    <input type="text" id="keywordInput" placeholder="Rechercher un mot-clé..." />
-    <div>
-      <label for="startDate">De :</label>
-      <input type="date" id="startDate" />
-      <label for="endDate">À :</label>
-      <input type="date" id="endDate" />
-      <button id="resetFilters">Réinitialiser</button>
-    </div>
-  </div>
-
-  <!-- Timeline -->
-  <div class="timeline-container" id="timeline">
-    <div class="timeline-line"></div>
-
-    <!-- 10 événements -->
-    <div class="timeline-event" data-date="2025-05-12" data-keywords="colloque IA Paris Sorbonne intelligence artificielle recherche">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">12 mai 2025</div>
-          <div class="event-lieu">Université Paris-Sorbonne</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Colloque</h1>
-        <p class="event-description">Présentation sur l’impact de l’IA dans l’enseignement supérieur.</p>
-        <p class="event-link"><a href="docs/colloque-ia-2025.pdf">Documentation</a></p>
-      </div>
-    </div>
-
-    <div class="timeline-event" data-date="2024-11-20" data-keywords="conférence Lyon sciences données machine learning">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">20 nov. 2024</div>
-          <div class="event-lieu">Université Lyon 2</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Conférence</h1>
-        <p class="event-description">Conférence invitée sur l’avenir des sciences des données.</p>
-        <p class="event-link"><a href="docs/conference-lyon-2024.pdf">Documentation</a></p>
-      </div>
-    </div>
-
-    <div class="timeline-event" data-date="2023-09-10" data-keywords="présentation Bordeaux pédagogie numérique">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">10 sept. 2023</div>
-          <div class="event-lieu">Université Bordeaux Montaigne</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Présentation</h1>
-        <p class="event-description">Atelier sur les outils numériques pour la pédagogie.</p>
-        <p class="event-link"><a href="docs/presentation-bordeaux-2023.pdf">Slides</a></p>
-      </div>
-    </div>
-
-    <div class="timeline-event" data-date="2022-06-05" data-keywords="atelier Marseille humanités numériques formation">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">5 juin 2022</div>
-          <div class="event-lieu">Université Aix-Marseille</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Atelier</h1>
-        <p class="event-description">Atelier pratique sur les humanités numériques.</p>
-        <p class="event-link"><a href="docs/atelier-marseille-2022.pdf">Programme</a></p>
-      </div>
-    </div>
-
-    <div class="timeline-event" data-date="2021-11-17" data-keywords="colloque Nantes open data données ouvertes">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">17 nov. 2021</div>
-          <div class="event-lieu">Université de Nantes</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Colloque</h1>
-        <p class="event-description">Colloque international sur l’Open Data et ses usages.</p>
-        <p class="event-link"><a href="docs/colloque-nantes-2021.pdf">Compte rendu</a></p>
-      </div>
-    </div>
-
-    <div class="timeline-event" data-date="2020-10-08" data-keywords="séminaire Lille science numérique collaboration">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">8 oct. 2020</div>
-          <div class="event-lieu">Université de Lille</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Séminaire</h1>
-        <p class="event-description">Séminaire interdisciplinaire sur la science numérique.</p>
-        <p class="event-link"><a href="docs/seminaire-lille-2020.pdf">Programme</a></p>
-      </div>
-    </div>
-
-    <div class="timeline-event" data-date="2019-04-12" data-keywords="présentation Strasbourg linguistique corpus">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">12 avr. 2019</div>
-          <div class="event-lieu">Université de Strasbourg</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Présentation</h1>
-        <p class="event-description">Présentation sur l’analyse de corpus linguistiques.</p>
-        <p class="event-link"><a href="docs/presentation-strasbourg-2019.pdf">Slides</a></p>
-      </div>
-    </div>
-
-    <div class="timeline-event" data-date="2018-06-30" data-keywords="atelier Toulouse visualisation données big data">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">30 juin 2018</div>
-          <div class="event-lieu">Université Toulouse Jean Jaurès</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Atelier</h1>
-        <p class="event-description">Initiation aux outils de visualisation de données massives.</p>
-        <p class="event-link"><a href="docs/atelier-toulouse-2018.pdf">Support</a></p>
-      </div>
-    </div>
-
-    <div class="timeline-event" data-date="2017-03-25" data-keywords="séminaire Montpellier éducation numérique">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">25 mars 2017</div>
-          <div class="event-lieu">Université de Montpellier</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Séminaire</h1>
-        <p class="event-description">Séminaire sur l’éducation et les technologies numériques.</p>
-        <p class="event-link"><a href="docs/seminaire-montpellier-2017.pdf">Programme</a></p>
-      </div>
-    </div>
-
-    <div class="timeline-event" data-date="2015-12-02" data-keywords="conférence Nice réseaux sociaux communication">
-      <div class="timeline-point"></div>
-      <div class="event-left">
-        <div class="event-box">
-          <div class="event-date">2 déc. 2015</div>
-          <div class="event-lieu">Université Côte d’Azur, Nice</div>
-        </div>
-      </div>
-      <div class="event-right">
-        <h1 class="event-type">Conférence</h1>
-        <p class="event-description">Conférence sur l’évolution des réseaux sociaux dans la communication.</p>
-        <p class="event-link"><a href="docs/conference-nice-2015.pdf">Compte rendu</a></p>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Footer -->
+  <!-- Ici on charge dynamiquement le footer -->
   <div id="footer-placeholder"></div>
 
   <script>
@@ -361,51 +47,12 @@
           console.error('Erreur:', error);
         });
     }
+
     loadHTML('header-placeholder', 'header.html');
     loadHTML('footer-placeholder', 'footer.html');
-
-    // Filtrage JS
-    const keywordInput = document.getElementById('keywordInput');
-    const startDateInput = document.getElementById('startDate');
-    const endDateInput = document.getElementById('endDate');
-    const resetBtn = document.getElementById('resetFilters');
-    const events = document.querySelectorAll('.timeline-event');
-
-    function applyFilters() {
-      const keyword = keywordInput.value.toLowerCase();
-      const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
-      const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
-
-      events.forEach(event => {
-        const eventDate = new Date(event.getAttribute('data-date'));
-        const keywords = event.getAttribute('data-keywords').toLowerCase();
-
-        let visible = true;
-
-        if (keyword && !keywords.includes(keyword)) {
-          visible = false;
-        }
-        if (startDate && eventDate < startDate) {
-          visible = false;
-        }
-        if (endDate && eventDate > endDate) {
-          visible = false;
-        }
-
-        event.style.display = visible ? 'block' : 'none';
-      });
-    }
-
-    keywordInput.addEventListener('input', applyFilters);
-    startDateInput.addEventListener('change', applyFilters);
-    endDateInput.addEventListener('change', applyFilters);
-
-    resetBtn.addEventListener('click', () => {
-      keywordInput.value = '';
-      startDateInput.value = '';
-      endDateInput.value = '';
-      events.forEach(e => e.style.display = 'block');
-    });
   </script>
+
+  <!-- Script de modification dynamique -->
+  <script src="modifications.js"></script>
 </body>
 </html>
