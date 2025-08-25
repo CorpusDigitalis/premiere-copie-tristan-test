@@ -7,255 +7,243 @@
   <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-  <style>
-    /* ====== Layout local à la page Interventions ====== */
+ <style>
+/* ====== Layout local à la page Interventions ====== */
 
-    /* Titre + intro alignés au thème */
-    #titre-interventions { text-align: center; margin-top: 1rem; }
-    #texte-intro-interventions { text-align: center; max-width: 760px; margin: 0.25rem auto 1.25rem auto; }
-
-    /* -------- Zone FILTRES (sans box, une ligne, sticky sous header) -------- */
-    :root { --header-offset: 0px; } /* sera mis à jour en JS quand le header est chargé */
-    #tools-box {
-      position: sticky;
-      top: var(--header-offset);
-      z-index: 10;
-      background: transparent;     /* pas de box, se fond avec le fond */
-      box-shadow: none;             /* pas d’ombre quand sticky */
-      margin: 1.25rem auto 0.5rem auto;
-      padding: 0.25rem 0;           /* léger padding vertical pour respirer */
-      max-width: 960px;             /* suit la largeur de .container */
-      display: flex;
-      align-items: center;
-      justify-content: space-between; /* recherche à gauche, dates à droite */
-      gap: 1.25rem;
-    }
-    /* Groupe de gauche = champ recherche */
-    #tools-left {
-      flex: 1 1 50%;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-    }
-    #search-keyword {
-      width: 100%;
-      max-width: 360px;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #fff;
-      font-family: 'Alata', sans-serif;
-      letter-spacing: 0.02em;
-    }
-    /* Groupe de droite = dates + reset */
-    #tools-right {
-      flex: 1 1 50%;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    #date-start, #date-end {
-      padding: 0.5rem 0.5rem;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #fff;
-      font-family: 'Alata', sans-serif;
-      letter-spacing: 0.02em;
-    }
-    #btn-reset {
-      padding: 0.5rem 0.9rem;
-      border: 1px solid #1f1f1f;
-      border-radius: 8px;
-      background: #1f1f1f;
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.2s ease, background 0.1s ease;
-      font-family: 'Alata', sans-serif;
-      letter-spacing: 0.02em;
-    }
-    #btn-reset:hover { transform: scale(0.98); }
-    #btn-reset:active { transform: scale(0.96); background: #444; }
-
-    /* -------- TIMELINE -------- */
-    #timeline-wrapper { position: relative; margin-top: 2.25rem; margin-bottom: 4rem; }
-
-    /* Ligne centrale avec gros dégradé AVANT le 1er point */
-    #timeline-line {
-      position: absolute;
-      top: 0; bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      /* Long amorce transparente (160px) puis transition vers noir */
-      background: linear-gradient(
-        to bottom,
-        rgba(31,31,31,0) 0px,
-        rgba(31,31,31,0) 160px,
-        rgba(31,31,31,1) 220px,
-        rgba(31,31,31,1) calc(100% - 16px),
-        rgba(31,31,31,0.85) 100%
-      );
-    }
-
-    /* Grille : gauche (box) | ligne | droite (contenu) */
-    .timeline-grid {
-      display: grid;
-      grid-template-columns: minmax(260px, 380px) 4px minmax(320px, 1fr);
-      column-gap: 2rem;
-      row-gap: 2rem;
-      align-items: center; /* important pour centrage vertical global */
-      position: relative;
-    }
-
-    /* Un événement = une ligne de la grille */
-    .timeline-event { display: contents; }
-
-    /* Cellule centrale pour le point (centré verticalement par flex) */
-    .timeline-dot {
-      grid-column: 2;
-      display: flex;
-      align-items: center;   /* centre le point verticalement dans la hauteur de la ligne */
-      justify-content: center;
-      height: 100%;
-      position: relative;
-      min-height: 48px;      /* évite les trop petites lignes */
-    }
-    .timeline-dot::after {
-      content: "";
-      width: 10px; height: 10px;
-      background: #1f1f1f;
-      border-radius: 50%;
-      display: block;
-    }
-
-    /* Colonne GAUCHE = box fixe (date + lieu) */
-    .event-left {
-      grid-column: 1;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-    }
-    .event-card {
-      width: 380px; max-width: 100%;
-      background: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      text-align: center;
-    }
-    .event-date { font-weight: 700; margin: 0 0 .35rem 0; color: #222; }
-    .event-lieu { margin: 0; color: #222; opacity: .95; }
-
-    /* Colonne DROITE = type + description + lien (sans box) */
-    .event-right { grid-column: 3; align-self: stretch; }
-    .event-type {
-      font-size: 1.25rem; margin: 0 0 .35rem 0; color: #222; letter-spacing: .015em;
-    }
-    .event-description {
-      margin: 0 0 .35rem 0; color: #222; letter-spacing: .015em; line-height: 1.6;
-    }
-    .event-link a {
-      text-decoration: none; color: #0077cc; font-weight: 700; transition: color .2s ease;
-    }
-    .event-link a:hover { color: #005999; }
-
-    /* Point final au-dessus du footer (petit effet “fin de ligne”) */
-    #timeline-end-dot {
-      position: absolute;
-      left: 50%; bottom: -8px; transform: translateX(-50%);
-      width: 10px; height: 10px; background: #1f1f1f; border-radius: 50%;
-    }
-
-    /* -------- Surlignage recherche -------- */
-    mark { background: #fff59d; color: #222; padding: 0 .05em; border-radius: 2px; }
-
-    /* -------- Responsive -------- */
-    @media (max-width: 880px) {
-      /* Zone filtres en colonne centrée (mais toujours sticky) */
-      #tools-box {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.6rem;
-        padding: 0.35rem 0;
-      }
-      #tools-left, #tools-right {
-        flex: 1 1 auto;
-        justify-content: center;
-      }
-      #search-keyword { max-width: none; }
-
-      /* Timeline en une colonne : ligne à gauche, contenu sous la box */
-      .timeline-grid { grid-template-columns: 1fr; }
-      #timeline-line { left: 16px; transform: none; }             /* la BARRE passe à gauche */
-      .timeline-dot { grid-column: 1; align-items: center; }
-      .timeline-dot::after { margin-left: 16px; }                  /* décale le point visuellement */
-      .event-left { grid-column: 1; justify-content: flex-start; }
-      .event-right { grid-column: 1; margin-top: .5rem; }
-      .event-card { width: 100%; }
-      #timeline-end-dot { left: 16px; transform: translateX(-50%); }
-    }
-
-    /* Respecte le “prefers-reduced-motion” */
-    @media (prefers-reduced-motion: reduce) {
-      #btn-reset { transition: none; }
-    }
-
-    /* Ligne verticale bien centrée */
-.timeline::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 2px;
-  background: linear-gradient(to bottom, transparent 0%, #000 15%);
-  transform: translateX(-50%);
-  z-index: 0;
+/* Titre + intro alignés au thème */
+#titre-interventions {
+  text-align: center;
+  margin-top: 1rem;
+}
+#texte-intro-interventions {
+  text-align: center;
+  max-width: 760px;
+  margin: 0.25rem auto 1.25rem auto;
 }
 
-/* Points noirs centrés verticalement */
-.timeline-event .timeline-point {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 12px;
-  height: 12px;
-  background-color: black;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-}
-
-/* Alignement des blocs */
-.timeline-event {
-  position: relative;
+/* -------- Zone FILTRES (sticky sous header) -------- */
+:root { --header-offset: 0px; } /* mis à jour par JS au chargement */
+#tools-box {
+  position: sticky;
+  top: var(--header-offset);
+  z-index: 10;
+  background: transparent;
+  box-shadow: none;
+  margin: 1.25rem auto 0.5rem auto;
+  padding: 0.25rem 0;
+  max-width: 960px;
   display: flex;
   align-items: center;
-  margin: 40px 0;
+  justify-content: space-between;
+  gap: 1.25rem;
 }
 
-/* Boîte date/lieu */
-.timeline-box {
-  width: 200px;
-  padding: 12px;
-  background: #fff;
+/* Groupe de gauche = recherche */
+#tools-left {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+#search-keyword {
+  width: 100%;
+  max-width: 360px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+  background: #fff;
+  font-family: 'Alata', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Groupe de droite = dates + reset */
+#tools-right {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+#date-start, #date-end {
+  padding: 0.5rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  font-family: 'Alata', sans-serif;
+  letter-spacing: 0.02em;
+}
+#btn-reset {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid #1f1f1f;
+  border-radius: 8px;
+  background: #1f1f1f;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.1s ease;
+  font-family: 'Alata', sans-serif;
+  letter-spacing: 0.02em;
+}
+#btn-reset:hover { transform: scale(0.98); }
+#btn-reset:active { transform: scale(0.96); background: #444; }
+
+/* -------- TIMELINE -------- */
+#timeline-wrapper {
+  position: relative;
+  margin-top: 2.25rem;
+  margin-bottom: 4rem;
+}
+
+/* Ligne centrale */
+#timeline-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  background: linear-gradient(
+    to bottom,
+    rgba(31,31,31,0) 0px,
+    rgba(31,31,31,0) 160px,
+    rgba(31,31,31,1) 220px,
+    rgba(31,31,31,1) calc(100% - 16px),
+    rgba(31,31,31,0.85) 100%
+  );
+}
+
+/* Grille : gauche (box) | ligne | droite (contenu) */
+.timeline-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 380px) 4px minmax(320px, 1fr);
+  column-gap: 2rem;
+  row-gap: 2rem;
+  align-items: center;
+  position: relative;
+}
+
+/* Chaque événement */
+.timeline-event { display: contents; }
+
+/* Point central */
+.timeline-dot {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  min-height: 48px;
+}
+.timeline-dot::after {
+  content: "";
+  width: 10px; height: 10px;
+  background: #1f1f1f;
+  border-radius: 50%;
+  display: block;
+}
+
+/* Colonne GAUCHE = box date/lieu */
+.event-left {
+  grid-column: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.event-card {
+  width: 380px; max-width: 100%;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   text-align: center;
-  margin-right: 30px;
-  flex-shrink: 0;
+}
+.event-date {
+  font-weight: 700;
+  margin: 0 0 .35rem 0;
+  color: #222;
+}
+.event-lieu {
+  margin: 0;
+  color: #222;
+  opacity: .95;
 }
 
-/* Contenu à droite */
-.timeline-content {
-  margin-left: 30px;
-  flex: 1;
+/* Colonne DROITE = type + description + lien */
+.event-right {
+  grid-column: 3;
+  align-self: stretch;
+}
+.event-type {
+  font-size: 1.25rem;
+  margin: 0 0 .35rem 0;
+  color: #222;
+  letter-spacing: .015em;
+}
+.event-description {
+  margin: 0 0 .35rem 0;
+  color: #222;
+  letter-spacing: .015em;
+  line-height: 1.6;
+}
+.event-link a {
+  text-decoration: none;
+  color: #0077cc;
+  font-weight: 700;
+  transition: color .2s ease;
+}
+.event-link a:hover { color: #005999; }
+
+/* Point final */
+#timeline-end-dot {
+  position: absolute;
+  left: 50%; bottom: -8px;
+  transform: translateX(-50%);
+  width: 10px; height: 10px;
+  background: #1f1f1f;
+  border-radius: 50%;
 }
 
-  </style>
+/* -------- Recherche highlight -------- */
+mark {
+  background: #fff59d;
+  color: #222;
+  padding: 0 .05em;
+  border-radius: 2px;
+}
+
+/* -------- Responsive -------- */
+@media (max-width: 880px) {
+  /* Zone filtres = colonne */
+  #tools-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+  }
+  #tools-left, #tools-right {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+  #search-keyword { max-width: none; }
+
+  /* Timeline en une colonne */
+  .timeline-grid { grid-template-columns: 1fr; }
+  #timeline-line { left: 16px; transform: none; }
+  .timeline-dot { grid-column: 1; align-items: center; }
+  .timeline-dot::after { margin-left: 16px; }
+  .event-left { grid-column: 1; justify-content: flex-start; }
+  .event-right { grid-column: 1; margin-top: .5rem; }
+  .event-card { width: 100%; }
+  #timeline-end-dot { left: 16px; transform: translateX(-50%); }
+}
+
+/* Réduction motion */
+@media (prefers-reduced-motion: reduce) {
+  #btn-reset { transition: none; }
+}
+</style>
+
 </head>
 <body style="outline: none;">
 
