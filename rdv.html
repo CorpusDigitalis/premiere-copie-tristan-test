@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Prendre Rendez-vous</title>
+  <title>Prendre rendez-vous – Corpus Digitalis</title>
   <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -14,15 +14,15 @@
 
   <div class="container">
     <div class="main-content">
-      <h1>Prendre rendez-vous</h1>
-      <p>Sélectionnez un créneau disponible dans le calendrier ci-dessous :</p>
-
-      <!-- Widget Cal.com -->
-      <div style="width:100%; height:700px;">
+      <h1>Réservez un créneau de 15 minutes</h1>
+      <p>Choisissez un créneau disponible ci-dessous :</p>
+      
+      <!-- Widget Cal.com intégré via iframe -->
+      <div class="cal-embed-wrapper" style="width:100%; max-width:600px; margin:0 auto; height:700px;">
         <iframe
-          src="https://cal.com/votre-identifiant?embed=true"
-          style="width:100%; height:100%; border:none;"
-          allow="camera; microphone; autoplay; encrypted-media;">
+          src="https://cal.com/corpusdigitalis/15min?embed=true"
+          style="width:100%; height:100%; border:none; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);"
+          allow="camera; microphone; autoplay; encrypted-media">
         </iframe>
       </div>
     </div>
@@ -31,6 +31,7 @@
   <!-- Footer dynamique -->
   <div id="footer-placeholder"></div>
 
+  <!-- Script de chargement dynamique header & footer -->
   <script>
     function loadHTML(id, url) {
       fetch(url)
@@ -38,12 +39,8 @@
           if (!response.ok) throw new Error('Erreur de chargement');
           return response.text();
         })
-        .then(data => {
-          document.getElementById(id).innerHTML = data;
-        })
-        .catch(error => {
-          console.error('Erreur:', error);
-        });
+        .then(html => document.getElementById(id).innerHTML = html)
+        .catch(error => console.error('Erreur lors du chargement de ' + id + ':', error));
     }
 
     loadHTML('header-placeholder', 'header.html');
